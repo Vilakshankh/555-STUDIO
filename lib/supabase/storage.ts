@@ -8,5 +8,9 @@ const PUBLIC_BASE = SUPABASE_URL
 export function publicImageUrl(path: string) {
   if (!PUBLIC_BASE) return path;
   const cleaned = path.replace(/^\/+/, "");
-  return `${PUBLIC_BASE}/${encodeURI(cleaned)}`;
+  const encoded = cleaned
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+  return `${PUBLIC_BASE}/${encoded}`;
 }
