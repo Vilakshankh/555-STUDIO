@@ -24,14 +24,8 @@ export default function Info() {
             Why We Experiment
           </h2>
           <div className="textFlow">
-            <p>A studio is a place of attention.</p>
-            <p>Connection shifts with space, scale, and presence. It responds to context.</p>
-            <p>We experiment to learn the avatars of transformation.</p>
-            <p>We adjust structure. We refine constraints. We explore different room sizes and ways of inviting people in.</p>
-            <p>Each experiment sharpens our understanding of what creates depth, openness, and momentum.</p>
-            <p>The goal is understanding.</p>
-            <p>We are refining the conditions where people feel seen and ideas move forward.</p>
-            <p>555 evolves through attention.</p>
+            <p>A studio is a place of attention. Connection shifts with space, scale, and presence. It responds to context.
+            We experiment to learn the avatars of transformation. We adjust structure. We refine constraints. We explore different room sizes and ways of inviting people in. Each experiment sharpens our understanding of what creates depth, openness, and momentum. The goal is understanding. We are refining the conditions where people feel seen and ideas move forward. 555 evolves through attention.</p>
           </div>
         </div>
       </section>

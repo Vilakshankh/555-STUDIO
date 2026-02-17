@@ -134,7 +134,7 @@ body {
 
 .home-section__corner {
   position: absolute;
-  font-size: 24px;
+  font-size: 60px;
   font-weight: 600;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   z-index: 10;
@@ -167,7 +167,7 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: clamp(1.5rem, 2vw, 2rem);
   overflow-y: hidden;
-  padding: 3rem;
+  padding: 10rem;
   margin: 0;
   background: white;
   /* Define view timeline for scroll-driven animation */
@@ -178,7 +178,7 @@ body {
 .column {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 10rem;
 }
 
 .column__item {
@@ -282,6 +282,7 @@ body {
   height: 100%;
   pointer-events: none;
   z-index: 4000;
+  mix-blend-mode: difference;
 }
 
 .corner-mark {
@@ -289,9 +290,9 @@ body {
   font-size: 60px;
   font-weight: 600;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #fff;
   margin: 2rem;
-  transition: color 0.3s ease;
+  color: white;
+
 }
 
 .corner-mark--top-left {
