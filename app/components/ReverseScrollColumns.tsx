@@ -1,8 +1,9 @@
 "use client";
 
 import { useMemo } from "react";
+import { publicImageUrl } from "@/lib/supabase/storage";
 
-const PRESENTATION_BASE = "/presentation%20night%20pictures";
+const PRESENTATION_FOLDER = "presentation night pictures";
 
 /** Seeded shuffle so server and client render the same order (avoids hydration mismatch). */
 function shuffleWithSeed<T>(array: T[], seed: number): T[] {
@@ -134,8 +135,8 @@ const PRESENTATION_IMAGES = [
 export default function ReverseScrollColumns() {
   const images = useMemo(
     () =>
-      shuffleWithSeed(PRESENTATION_IMAGES, 555123).map(
-        (name) => `${PRESENTATION_BASE}/${encodeURIComponent(name)}`
+      shuffleWithSeed(PRESENTATION_IMAGES, 555123).map((name) =>
+        publicImageUrl(`${PRESENTATION_FOLDER}/${name}`)
       ),
     []
   );
