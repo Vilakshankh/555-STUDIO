@@ -1,0 +1,120 @@
+/* Section title: keep on one line */
+.sectionTitleOneLine {
+  white-space: nowrap;
+}
+
+/* Page article - top intro section */
+.pageArticle {
+  padding: 80px 0 0 0;
+}
+
+@media (max-width: 1240px) {
+  .pageArticle {
+    padding-top: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pageArticle {
+    padding-top: 32px;
+  }
+}
+
+/* Post content - intro text */
+.postContent {
+  padding-bottom: 40px;
+  max-width: 1400px;
+  margin: 0;
+}
+
+@media (max-width: 1540px) {
+  .postContent {
+    padding-bottom: 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .postContent {
+    padding-bottom: 16px;
+  }
+}
+
+/* Events grid */
+.eventsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem 3rem;
+  margin-top: 3rem;
+  max-width: 800px;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+@media (max-width: 768px) {
+  .eventsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+}
+
+.eventItem {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+}
+
+.eventTitle {
+  font-size: inherit;
+  font-weight: 500;
+}
+
+/* People list */
+.peopleList {
+  margin-top: 2rem;
+  max-width: 800px;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.peopleList p {
+  margin-bottom: 1rem;
+}
+
+.peopleList a {
+  color: inherit;
+  text-decoration: underline;
+  transition: opacity 0.2s ease;
+}
+
+.peopleList a:hover {
+  opacity: 0.7;
+}
+
+.peopleList a:focus {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+
+/* Contact info */
+.contactInfo {
+  font-style: normal;
+  max-width: 800px;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.contactInfo a {
+  color: inherit;
+  text-decoration: underline;
+  transition: opacity 0.2s ease;
+}
+
+.contactInfo a:hover {
+  opacity: 0.7;
+}
+
+.contactInfo a:focus {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
