@@ -22,6 +22,10 @@ function shuffleWithSeed<T>(array: T[], seed: number): T[] {
   return out;
 }
 
+function toWebpFileName(fileName: string) {
+  return fileName.replace(/\.[^/.]+$/, ".webp");
+}
+
 const PRESENTATION_IMAGES = [
   "555-vElectra-1.jpg",
   "555-vElectra-10.jpg",
@@ -138,7 +142,7 @@ export default function ReverseScrollColumns() {
   const paths = useMemo(
     () =>
       shuffleWithSeed(PRESENTATION_IMAGES, 555123).map(
-        (name) => `${PRESENTATION_FOLDER}/${name}`
+        (name) => `${PRESENTATION_FOLDER}/${toWebpFileName(name)}`
       ),
     []
   );
