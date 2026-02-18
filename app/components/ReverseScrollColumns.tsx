@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { fetchSignedImageUrls } from "@/lib/supabase/storage";
 
 const PRESENTATION_FOLDER = "presentation night pictures";
+const INITIAL_VISIBLE_COUNT = 12;
+const LOAD_BATCH_SIZE = 12;
 
 /** Seeded shuffle so server and client render the same order (avoids hydration mismatch). */
 function shuffleWithSeed<T>(array: T[], seed: number): T[] {
@@ -133,7 +135,7 @@ const PRESENTATION_IMAGES = [
 ];
 
 export default function ReverseScrollColumns() {
-  const shuffledPaths = useMemo(
+  const paths = useMemo(
     () =>
       shuffleWithSeed(PRESENTATION_IMAGES, 555123).map(
         (name) => `${PRESENTATION_FOLDER}/${name}`
@@ -141,36 +143,68 @@ export default function ReverseScrollColumns() {
     []
   );
   const [images, setImages] = useState<string[]>([]);
+  const [targetCount, setTargetCount] = useState(INITIAL_VISIBLE_COUNT);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let cancelled = false;
 
-    async function loadImages() {
+    async function loadNextSignedBatch() {
+      if (targetCount <= images.length) return;
+      const nextPaths = paths.slice(images.length, targetCount);
+      if (nextPaths.length === 0) return;
+
       try {
-        const signedUrls = await fetchSignedImageUrls(shuffledPaths);
+        const signedUrls = await fetchSignedImageUrls(nextPaths);
         if (!cancelled) {
-          setImages(signedUrls.filter(Boolean));
+          setImages((current) => [...current, ...signedUrls]);
         }
       } catch {
         if (!cancelled) {
-          setImages([]);
+          setImages((current) => current);
         }
       }
     }
 
-    loadImages();
+    loadNextSignedBatch();
 
     return () => {
       cancelled = true;
     };
-  }, [shuffledPaths]);
+  }, [images.length, paths, targetCount]);
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (!entry?.isIntersecting) return;
+        setTargetCount((current) => Math.min(current + LOAD_BATCH_SIZE, paths.length));
+      },
+      { rootMargin: "1200px 0px" }
+    );
+
+    observer.observe(sentinel);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [paths.length]);
+
+  const visibleImages = useMemo(() => {
+    return images.slice(0, targetCount).filter(Boolean);
+  }, [images, targetCount]);
 
   // Left column (reverse): indices 0, 3, 6, 9, ...
   // Center column (normal): indices 1, 4, 7, ...
   // Right column (reverse): indices 2, 5, 8, ...
-  const leftColumnImages = images.filter((_, i) => i % 3 === 0);
-  const centerColumnImages = images.filter((_, i) => i % 3 === 1);
-  const rightColumnImages = images.filter((_, i) => i % 3 === 2);
+  const leftColumnImages = visibleImages.filter((_, i) => i % 3 === 0);
+  const centerColumnImages = visibleImages.filter((_, i) => i % 3 === 1);
+  const rightColumnImages = visibleImages.filter((_, i) => i % 3 === 2);
+
+  const allImagesMounted = images.length >= paths.length;
 
   return (
     <div className="columns">
@@ -182,6 +216,7 @@ export default function ReverseScrollColumns() {
               alt={`Presentation night photo ${index + 1}`}
               className="column__img"
               loading="lazy"
+              decoding="async"
             />
           </div>
         ))}
@@ -194,6 +229,7 @@ export default function ReverseScrollColumns() {
               alt={`Presentation night photo ${index + 1}`}
               className="column__img"
               loading="lazy"
+              decoding="async"
             />
           </div>
         ))}
@@ -206,10 +242,18 @@ export default function ReverseScrollColumns() {
               alt={`Presentation night photo ${index + 1}`}
               className="column__img"
               loading="lazy"
+              decoding="async"
             />
           </div>
         ))}
       </div>
+      {!allImagesMounted && (
+        <div
+          ref={sentinelRef}
+          style={{ width: "100%", height: 1, pointerEvents: "none" }}
+          aria-hidden="true"
+        />
+      )}
     </div>
   );
 }

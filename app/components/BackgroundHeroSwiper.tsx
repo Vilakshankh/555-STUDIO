@@ -10,6 +10,8 @@ import { fetchSignedImageUrls } from "@/lib/supabase/storage";
 import "swiper/css";
 import "swiper/css/effect-fade";
 
+const INITIAL_HERO_SIGN_COUNT = 1;
+
 const BACKGROUND_IMAGES = [
   "backgrounds/1.png",
   "backgrounds/2.png",
@@ -36,9 +38,11 @@ export default function BackgroundHeroSwiper() {
   useEffect(() => {
     let cancelled = false;
 
-    async function loadImages() {
+    async function loadInitialImage() {
       try {
-        const signedUrls = await fetchSignedImageUrls(BACKGROUND_IMAGES);
+        const signedUrls = await fetchSignedImageUrls(
+          BACKGROUND_IMAGES.slice(0, INITIAL_HERO_SIGN_COUNT)
+        );
         if (!cancelled) {
           setImages(signedUrls.filter(Boolean));
         }
@@ -49,7 +53,26 @@ export default function BackgroundHeroSwiper() {
       }
     }
 
-    loadImages();
+    loadInitialImage();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadRemainingImages() {
+      try {
+        const signedUrls = await fetchSignedImageUrls(BACKGROUND_IMAGES);
+        if (!cancelled) {
+          setImages(signedUrls.filter(Boolean));
+        }
+      } catch {}
+    }
+
+    loadRemainingImages();
 
     return () => {
       cancelled = true;
@@ -77,7 +100,11 @@ export default function BackgroundHeroSwiper() {
               alt={`Background ${index + 1}`}
               fill
               style={{ objectFit: "cover" }}
-              loading="lazy"
+              priority={index === 0}
+              loading={index === 0 ? "eager" : "lazy"}
+              fetchPriority={index === 0 ? "high" : "low"}
+              sizes="100vw"
+              unoptimized
             />
           </SwiperSlide>
         ))}
