@@ -4,6 +4,10 @@
   padding: 0;
 }
 
+:root {
+  --nav-height: 120px;
+}
+
 html,
 body {
   min-height: 100%;
@@ -16,7 +20,7 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 120px;
+  height: var(--nav-height);
   z-index: 2000;
   background: transparent;
   color: white;
@@ -44,7 +48,7 @@ body {
 .primary-navigation .menu {
   list-style: none;
   display: flex;
-  gap: 5rem;
+  gap: clamp(2rem, 7vw, 5rem);
   margin: 0;
   padding: 0;
 }
@@ -54,7 +58,7 @@ body {
   text-decoration: none;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 600;
-  font-size: 60px;
+  font-size: clamp(4rem, 8vw, 6rem);
 }
 
 .primary-navigation .menu a:hover {
@@ -66,9 +70,9 @@ body {
 /* Home Hero Section */
 .home-hero {
   position: relative;
-  min-height: 100vh;
-  margin-top: -120px;
-  padding-top: 120px;
+  min-height: 100svh;
+  margin-top: calc(-1 * var(--nav-height));
+  padding-top: var(--nav-height);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -96,10 +100,10 @@ body {
   position: relative;
   z-index: 1;
   margin: 0;
-  padding: 0 1.5rem 3rem;
-  max-width: 70%;
-  font-size: 24px;
-  line-height: 1.4;
+  padding: 0 1.5rem 2.4rem;
+  max-width: min(70%, 92rem);
+  font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+  line-height: 1.3;
   text-align: center;
   color: white;
   mix-blend-mode: difference;
@@ -167,7 +171,7 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: clamp(1.5rem, 2vw, 2rem);
   overflow-y: hidden;
-  padding: 10rem;
+  padding: clamp(3rem, 6vw, 10rem);
   margin: 0;
   background: white;
   /* Define view timeline for scroll-driven animation */
@@ -178,7 +182,7 @@ body {
 .column {
   display: flex;
   flex-direction: column;
-  gap: 10rem;
+  gap: clamp(4rem, 7vw, 10rem);
 }
 
 .column__item {
@@ -234,14 +238,62 @@ body {
 
 /* Responsive: collapse to single column on mobile */
 @media (max-width: 768px) {
+  :root {
+    --nav-height: 78px;
+  }
+
+  .main-content {
+    padding-top: var(--nav-height);
+  }
+
+  .primary-navigation {
+    padding-inline: 1.6rem;
+  }
+
+  .primary-navigation .menu a {
+    font-size: clamp(2.8rem, 12vw, 6rem);
+    line-height: 1;
+  }
+
   .columns {
     grid-template-columns: 1fr;
+    gap: 2.4rem;
+    padding: 2rem 1.6rem 3.2rem;
+    overflow: visible;
+    view-timeline-name: none;
   }
 
   .column-reverse {
     animation: none;
     transform: none;
     flex-direction: column;
+  }
+
+  .column {
+    gap: 2.4rem;
+  }
+
+  .column__item {
+    max-width: 100%;
+  }
+
+  .column__img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .home-hero {
+    min-height: 88svh;
+    align-items: flex-end;
+  }
+
+  .home-hero__tagline {
+    max-width: 92%;
+    padding: 0 1.2rem 1.6rem;
+    font-size: clamp(1.4rem, 6.3vw, 2.2rem);
+    line-height: 1.2;
+    text-wrap: balance;
   }
 }
 
@@ -287,10 +339,10 @@ body {
 
 .corner-mark {
   position: absolute;
-  font-size: 60px;
+  font-size: clamp(3.6rem, 5vw, 6rem);
   font-weight: 600;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  margin: 2rem;
+  margin: clamp(1rem, 3vw, 2rem);
   color: white;
 
 }
@@ -317,8 +369,8 @@ body {
 
 @media (max-width: 768px) {
   .corner-mark {
-    font-size: 36px;
-    margin: 1.5rem;
+    font-size: clamp(2.2rem, 9vw, 3.6rem);
+    margin: 0.8rem;
   }
 }
 
@@ -360,8 +412,8 @@ body {
   color: #fff;
   min-height: 100vh;
   /* Extend black into main's top padding so no white bar shows under nav */
-  margin-top: -120px;
-  padding-top: 120px;
+  margin-top: calc(-1 * var(--nav-height));
+  padding-top: var(--nav-height);
 }
 
 .pageBgBlack a {
@@ -431,6 +483,10 @@ html {
 body {
   font-size: 3.6rem; /* 36px */
   line-height: 1.2778;
+}
+
+.main-content {
+  padding-top: var(--nav-height);
 }
 
 h1, h2, h3, h4, h5, h6 {

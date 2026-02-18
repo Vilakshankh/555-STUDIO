@@ -24,7 +24,7 @@ export default function RootLayout({
         </a>
         <CornerOverlay />
         <Navbar />
-        <main id="main-content" style={{ paddingTop: "120px" }}>
+        <main id="main-content" className="main-content">
           {children}
         </main>
       </body>
