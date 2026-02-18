@@ -1,5 +1,5 @@
 import BackgroundHeroSwiper from "./components/BackgroundHeroSwiper";
-// import ReverseScrollColumns from "./components/ReverseScrollColumns";
+import ReverseScrollColumns from "./components/ReverseScrollColumns";
 
 export default function Home() {
   return (
@@ -11,9 +11,9 @@ export default function Home() {
           EXPERIENCES IN MONTRÉAL AND TORONTO.
         </p>
       </section>
-      {/* <section className="home-section" aria-label="Content section">
+      <section className="home-section" aria-label="Content section">
         <ReverseScrollColumns />
-      </section> */}
+      </section>
       {/* <section className="home-section" aria-label="Content section">
       <p>Section three content</p>
 
