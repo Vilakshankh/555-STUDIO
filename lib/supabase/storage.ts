@@ -1,16 +1,16 @@
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_BUCKET ?? "images";
+export async function fetchSignedImageUrls(paths: string[]) {
+  const response = await fetch("/api/storage/sign", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ paths }),
+  });
 
-const PUBLIC_BASE = SUPABASE_URL
-  ? `${SUPABASE_URL.replace(/\/+$/, "")}/storage/v1/object/public/${SUPABASE_BUCKET}`
-  : "";
+  if (!response.ok) {
+    throw new Error("Failed to fetch signed image URLs");
+  }
 
-export function publicImageUrl(path: string) {
-  if (!PUBLIC_BASE) return path;
-  const cleaned = path.replace(/^\/+/, "");
-  const encoded = cleaned
-    .split("/")
-    .map((segment) => encodeURIComponent(segment))
-    .join("/");
-  return `${PUBLIC_BASE}/${encoded}`;
+  const data = (await response.json()) as { urls: string[] };
+  return data.urls;
 }

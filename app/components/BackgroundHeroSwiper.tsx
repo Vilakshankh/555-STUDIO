@@ -1,9 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper/modules";
 import Image from "next/image";
-import { publicImageUrl } from "@/lib/supabase/storage";
+import { fetchSignedImageUrls } from "@/lib/supabase/storage";
 
 // Import Swiper styles
 import "swiper/css";
@@ -30,7 +31,30 @@ const BACKGROUND_IMAGES = [
 ];
 
 export default function BackgroundHeroSwiper() {
-  const images = BACKGROUND_IMAGES.map(publicImageUrl);
+  const [images, setImages] = useState<string[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadImages() {
+      try {
+        const signedUrls = await fetchSignedImageUrls(BACKGROUND_IMAGES);
+        if (!cancelled) {
+          setImages(signedUrls.filter(Boolean));
+        }
+      } catch {
+        if (!cancelled) {
+          setImages([]);
+        }
+      }
+    }
+
+    loadImages();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <div className="home-hero__bg">

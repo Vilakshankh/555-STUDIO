@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
-import { publicImageUrl } from "@/lib/supabase/storage";
+import { useEffect, useMemo, useState } from "react";
+import { fetchSignedImageUrls } from "@/lib/supabase/storage";
 
 const PRESENTATION_FOLDER = "presentation night pictures";
 
@@ -133,13 +133,38 @@ const PRESENTATION_IMAGES = [
 ];
 
 export default function ReverseScrollColumns() {
-  const images = useMemo(
+  const shuffledPaths = useMemo(
     () =>
-      shuffleWithSeed(PRESENTATION_IMAGES, 555123).map((name) =>
-        publicImageUrl(`${PRESENTATION_FOLDER}/${name}`)
+      shuffleWithSeed(PRESENTATION_IMAGES, 555123).map(
+        (name) => `${PRESENTATION_FOLDER}/${name}`
       ),
     []
   );
+  const [images, setImages] = useState<string[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadImages() {
+      try {
+        const signedUrls = await fetchSignedImageUrls(shuffledPaths);
+        if (!cancelled) {
+          setImages(signedUrls.filter(Boolean));
+        }
+      } catch {
+        if (!cancelled) {
+          setImages([]);
+        }
+      }
+    }
+
+    loadImages();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [shuffledPaths]);
+
   // Left column (reverse): indices 0, 3, 6, 9, ...
   // Center column (normal): indices 1, 4, 7, ...
   // Right column (reverse): indices 2, 5, 8, ...
