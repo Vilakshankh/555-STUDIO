@@ -14,10 +14,10 @@ export default function Home() {
       {/* <section className="home-section" aria-label="Content section">
         <ReverseScrollColumns />
       </section> */}
-      <section className="home-section" aria-label="Content section">
+      {/* <section className="home-section" aria-label="Content section">
       <p>Section three content</p>
 
-      </section>
+      </section> */}
     </>
   );
 }
