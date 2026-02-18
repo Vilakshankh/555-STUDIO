@@ -86,10 +86,10 @@ export default function BackgroundHeroSwiper() {
         effect="fade"
         loop={true}
         autoplay={{
-          delay: 4000,
+          delay: 1000,
           disableOnInteraction: false,
         }}
-        speed={1000}
+        speed={650}
         allowTouchMove={false}
         style={{ width: "100%", height: "100%" }}
       >
