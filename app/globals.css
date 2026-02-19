@@ -286,6 +286,32 @@ body {
 
 .galleryLoadOverlay__text {
   line-height: 1;
+  font-weight: var(--type-caption-weight);
+  transition: font-weight 0.15s ease;
+}
+
+.galleryLoadOverlay__spinner {
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.galleryLoadOverlay--emphasized .galleryLoadOverlay__text {
+  font-weight: 700;
+}
+
+.galleryLoadOverlay--emphasized .galleryLoadOverlay__spinner {
+  transform: scale(1.2);
+  filter: drop-shadow(0 0 4px #4ade80);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .galleryLoadOverlay__spinner {
+    transition: filter 0.15s ease;
+  }
+
+  .galleryLoadOverlay--emphasized .galleryLoadOverlay__spinner {
+    transform: none;
+    filter: drop-shadow(0 0 4px #4ade80);
+  }
 }
 
 @media (max-width: 768px) {

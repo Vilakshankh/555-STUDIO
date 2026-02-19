@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 interface ScrollLockProps {
   locked: boolean;
+  onAttempt?: () => void;
 }
 
 const SCROLL_KEYS = new Set([
@@ -16,7 +17,7 @@ const SCROLL_KEYS = new Set([
   " ",
 ]);
 
-export default function ScrollLock({ locked }: ScrollLockProps) {
+export default function ScrollLock({ locked, onAttempt }: ScrollLockProps) {
   useEffect(() => {
     if (!locked) return;
 
@@ -26,10 +27,16 @@ export default function ScrollLock({ locked }: ScrollLockProps) {
     document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
 
-    const prevent = (e: Event) => e.preventDefault();
+    const prevent = (e: Event) => {
+      e.preventDefault();
+      onAttempt?.();
+    };
 
     const preventKey = (e: KeyboardEvent) => {
-      if (SCROLL_KEYS.has(e.key)) e.preventDefault();
+      if (SCROLL_KEYS.has(e.key)) {
+        e.preventDefault();
+        onAttempt?.();
+      }
     };
 
     window.addEventListener("wheel", prevent, { passive: false });
