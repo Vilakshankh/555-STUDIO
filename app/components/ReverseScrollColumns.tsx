@@ -1,13 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { fetchSignedImageUrls } from "@/lib/supabase/storage";
 
 const PRESENTATION_FOLDER = "presentation night pictures";
-const INITIAL_VISIBLE_COUNT = 12;
-const LOAD_BATCH_SIZE = 12;
 
-/** Seeded shuffle so server and client render the same order (avoids hydration mismatch). */
 function shuffleWithSeed<T>(array: T[], seed: number): T[] {
   const out = [...array];
   let s = seed;
@@ -138,7 +135,15 @@ const PRESENTATION_IMAGES = [
   "_DSC1477.JPG",
 ];
 
-export default function ReverseScrollColumns() {
+export interface ReverseScrollColumnsProps {
+  onProgress?: (loaded: number, total: number) => void;
+  onReady?: () => void;
+}
+
+export default function ReverseScrollColumns({
+  onProgress,
+  onReady,
+}: ReverseScrollColumnsProps) {
   const paths = useMemo(
     () =>
       shuffleWithSeed(PRESENTATION_IMAGES, 555123).map(
@@ -146,69 +151,65 @@ export default function ReverseScrollColumns() {
       ),
     []
   );
+
   const [images, setImages] = useState<string[]>([]);
-  const [targetCount, setTargetCount] = useState(INITIAL_VISIBLE_COUNT);
-  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let cancelled = false;
 
-    async function loadNextSignedBatch() {
-      if (targetCount <= images.length) return;
-      const nextPaths = paths.slice(images.length, targetCount);
-      if (nextPaths.length === 0) return;
+    async function preloadAll() {
+      const total = paths.length;
+      let signedUrls: string[];
 
       try {
-        const signedUrls = await fetchSignedImageUrls(nextPaths);
-        if (!cancelled) {
-          setImages((current) => [...current, ...signedUrls]);
-        }
+        signedUrls = await fetchSignedImageUrls(paths);
       } catch {
+        // If signing fails entirely, report ready so scrolling isn't locked forever
         if (!cancelled) {
-          setImages((current) => current);
+          onProgress?.(total, total);
+          onReady?.();
         }
+        return;
       }
+
+      if (cancelled) return;
+
+      setImages(signedUrls.filter(Boolean));
+
+      // Preload + decode each image, track individual progress
+      let loadedCount = 0;
+      const settle = () => {
+        if (cancelled) return;
+        loadedCount++;
+        onProgress?.(loadedCount, total);
+        if (loadedCount === total) {
+          onReady?.();
+        }
+      };
+
+      signedUrls.forEach((src) => {
+        if (!src) {
+          settle();
+          return;
+        }
+        const img = new Image();
+        img.onload = () => img.decode().then(settle).catch(settle);
+        img.onerror = settle;
+        img.src = src;
+      });
     }
 
-    loadNextSignedBatch();
+    preloadAll();
 
     return () => {
       cancelled = true;
     };
-  }, [images.length, paths, targetCount]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  useEffect(() => {
-    const sentinel = sentinelRef.current;
-    if (!sentinel) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries;
-        if (!entry?.isIntersecting) return;
-        setTargetCount((current) => Math.min(current + LOAD_BATCH_SIZE, paths.length));
-      },
-      { rootMargin: "1200px 0px" }
-    );
-
-    observer.observe(sentinel);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [paths.length]);
-
-  const visibleImages = useMemo(() => {
-    return images.slice(0, targetCount).filter(Boolean);
-  }, [images, targetCount]);
-
-  // Left column (reverse): indices 0, 3, 6, 9, ...
-  // Center column (normal): indices 1, 4, 7, ...
-  // Right column (reverse): indices 2, 5, 8, ...
-  const leftColumnImages = visibleImages.filter((_, i) => i % 3 === 0);
-  const centerColumnImages = visibleImages.filter((_, i) => i % 3 === 1);
-  const rightColumnImages = visibleImages.filter((_, i) => i % 3 === 2);
-
-  const allImagesMounted = images.length >= paths.length;
+  const leftColumnImages = images.filter((_, i) => i % 3 === 0);
+  const centerColumnImages = images.filter((_, i) => i % 3 === 1);
+  const rightColumnImages = images.filter((_, i) => i % 3 === 2);
 
   return (
     <div className="columns">
@@ -219,7 +220,6 @@ export default function ReverseScrollColumns() {
               src={src}
               alt={`Presentation night photo ${index + 1}`}
               className="column__img"
-              loading="lazy"
               decoding="async"
             />
           </div>
@@ -232,7 +232,6 @@ export default function ReverseScrollColumns() {
               src={src}
               alt={`Presentation night photo ${index + 1}`}
               className="column__img"
-              loading="lazy"
               decoding="async"
             />
           </div>
@@ -245,19 +244,11 @@ export default function ReverseScrollColumns() {
               src={src}
               alt={`Presentation night photo ${index + 1}`}
               className="column__img"
-              loading="lazy"
               decoding="async"
             />
           </div>
         ))}
       </div>
-      {!allImagesMounted && (
-        <div
-          ref={sentinelRef}
-          style={{ width: "100%", height: 1, pointerEvents: "none" }}
-          aria-hidden="true"
-        />
-      )}
     </div>
   );
 }

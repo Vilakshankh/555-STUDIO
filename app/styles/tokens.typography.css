@@ -1,0 +1,115 @@
+/**
+ * Typography design tokens - sourced from Figma 555_online (node 139-514)
+ * Font family: Host Grotesk
+ * Semantic scale: Display/Headlines, Body Content, Captions
+ */
+
+:root {
+  /* -----------------------------------------------------------------------
+     Font family - --font-sans is injected by layout.tsx via next/font
+     (Host Grotesk with variable: "--font-sans")
+     ----------------------------------------------------------------------- */
+  --font-display: var(--font-sans, "Host Grotesk", -apple-system,
+    BlinkMacSystemFont, sans-serif);
+
+  /* -----------------------------------------------------------------------
+     Display / Headlines (large, bold - for hero text, nav links, etc.)
+     ----------------------------------------------------------------------- */
+  --type-display-size: clamp(4rem, 8vw, 6rem);
+  --type-display-line: 1.1;
+  --type-display-tracking: -0.02em;
+  --type-display-weight: 700;
+
+  /* -----------------------------------------------------------------------
+     H1
+     ----------------------------------------------------------------------- */
+  --type-h1-size: clamp(3rem, 6vw, 4.5rem);
+  --type-h1-line: 1.15;
+  --type-h1-tracking: -0.02em;
+  --type-h1-weight: 700;
+
+  /* -----------------------------------------------------------------------
+     H2 / Section titles
+     ----------------------------------------------------------------------- */
+  --type-h2-size: clamp(2rem, 4vw, 3rem);
+  --type-h2-line: 1.2;
+  --type-h2-tracking: -0.01em;
+  --type-h2-weight: 600;
+
+  /* -----------------------------------------------------------------------
+     H3
+     ----------------------------------------------------------------------- */
+  --type-h3-size: clamp(1.6rem, 2.5vw, 2.4rem);
+  --type-h3-line: 1.25;
+  --type-h3-tracking: 0;
+  --type-h3-weight: 600;
+
+  /* -----------------------------------------------------------------------
+     Body content (medium size, regular weight)
+     ----------------------------------------------------------------------- */
+  --type-body-size: clamp(1.4rem, 2vw, 1.8rem);
+  --type-body-line: 1.5;
+  --type-body-tracking: 0;
+  --type-body-weight: 400;
+
+  /* -----------------------------------------------------------------------
+     Captions (small, uppercase - for labels, metadata, etc.)
+     ----------------------------------------------------------------------- */
+  --type-caption-size: clamp(1rem, 1.5vw, 1.2rem);
+  --type-caption-line: 1.4;
+  --type-caption-tracking: 0.05em;
+  --type-caption-weight: 400;
+  --type-caption-transform: uppercase;
+}
+
+/* ---------------------------------------------------------------------------
+   Utility classes - token-driven typography
+   --------------------------------------------------------------------------- */
+.type-display {
+  font-family: var(--font-display);
+  font-size: var(--type-display-size);
+  line-height: var(--type-display-line);
+  letter-spacing: var(--type-display-tracking);
+  font-weight: var(--type-display-weight);
+}
+
+.type-h1 {
+  font-family: var(--font-sans);
+  font-size: var(--type-h1-size);
+  line-height: var(--type-h1-line);
+  letter-spacing: var(--type-h1-tracking);
+  font-weight: var(--type-h1-weight);
+}
+
+.type-h2 {
+  font-family: var(--font-sans);
+  font-size: var(--type-h2-size);
+  line-height: var(--type-h2-line);
+  letter-spacing: var(--type-h2-tracking);
+  font-weight: var(--type-h2-weight);
+}
+
+.type-h3 {
+  font-family: var(--font-sans);
+  font-size: var(--type-h3-size);
+  line-height: var(--type-h3-line);
+  letter-spacing: var(--type-h3-tracking);
+  font-weight: var(--type-h3-weight);
+}
+
+.type-body {
+  font-family: var(--font-sans);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  font-weight: var(--type-body-weight);
+}
+
+.type-caption {
+  font-family: var(--font-sans);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
+  letter-spacing: var(--type-caption-tracking);
+  font-weight: var(--type-caption-weight);
+  text-transform: var(--type-caption-transform);
+}

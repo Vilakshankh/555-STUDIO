@@ -1,120 +1,54 @@
-/* Section title: keep on one line */
-.sectionTitleOneLine {
-  white-space: nowrap;
-}
-
-/* Page article - top intro section */
-.pageArticle {
-  padding: 80px 0 0 0;
+/* Info page — hero left-column layout */
+.infoPage {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  padding-top: 80px;
+  padding-bottom: 8rem;
+  max-width: 900px;
 }
 
 @media (max-width: 1240px) {
-  .pageArticle {
-    padding-top: 40px;
+  .infoPage {
+    padding-top: 48px;
+    padding-bottom: 6rem;
   }
 }
 
 @media (max-width: 768px) {
-  .pageArticle {
+  .infoPage {
     padding-top: 32px;
+    padding-bottom: 4rem;
   }
 }
 
-/* Post content - intro text */
-.postContent {
-  padding-bottom: 40px;
-  max-width: 1400px;
+/* Each labelled block (label + content stacked) */
+.infoBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+  margin-top: 1em;
+}
+
+/* Section label — same size as body, uppercase, tracked */
+.infoSectionLabel {
+  font-family: var(--font-sans);
+  font-size: 1.8rem;
+  line-height: 1.4;
+  letter-spacing: 0.05em;
+  font-weight: 400;
+  text-transform: uppercase;
+  opacity: 0.6;
   margin: 0;
 }
 
-@media (max-width: 1540px) {
-  .postContent {
-    padding-bottom: 32px;
-  }
-}
-
-@media (max-width: 768px) {
-  .postContent {
-    padding-bottom: 16px;
-  }
-}
-
-/* Events grid */
-.eventsGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2rem 3rem;
-  margin-top: 3rem;
-  max-width: 800px;
-  margin-left: 0;
-  margin-right: 0;
-}
-
-@media (max-width: 768px) {
-  .eventsGrid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    margin-top: 2rem;
-  }
-}
-
-.eventItem {
+/* Tight list of items within a block */
+.infoList {
   display: flex;
-  align-items: baseline;
-  justify-content: flex-start;
+  flex-direction: column;
+  gap: 0.5em;
 }
 
-.eventTitle {
-  font-size: inherit;
-  font-weight: 500;
-}
-
-/* People list */
-.peopleList {
-  margin-top: 2rem;
-  max-width: 800px;
-  margin-left: 0;
-  margin-right: 0;
-}
-
-.peopleList p {
-  margin-bottom: 1rem;
-}
-
-.peopleList a {
-  color: inherit;
-  text-decoration: underline;
-  transition: opacity 0.2s ease;
-}
-
-.peopleList a:hover {
-  opacity: 0.7;
-}
-
-.peopleList a:focus {
-  outline: 2px solid #fff;
-  outline-offset: 4px;
-}
-
-/* Contact info */
-.contactInfo {
-  font-style: normal;
-  max-width: 800px;
-  margin-left: 0;
-  margin-right: 0;
-}
-
-.contactInfo a {
-  color: inherit;
-  text-decoration: underline;
-  transition: opacity 0.2s ease;
-}
-
-.contactInfo a:hover {
-  opacity: 0.7;
-}
-
-.contactInfo a:focus {
-  outline: 2px solid #fff;
-  outline-offset: 4px;
+.infoList p {
+  margin: 0;
 }

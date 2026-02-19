@@ -2,62 +2,38 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    // Only apply hero-based visibility on the home page
-    if (pathname !== "/") {
-      setIsVisible(true);
-      return;
-    }
-
-    // Find the hero element
-    const heroElement = document.querySelector(".home-hero");
-    if (!heroElement) {
-      setIsVisible(true);
-      return;
-    }
-
-    // Set up IntersectionObserver to watch the hero
-    // Negative bottom rootMargin: fade out before the second section enters view
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          // Show navbar when hero is intersecting, hide when it's not
-          setIsVisible(entry.isIntersecting);
-        });
-      },
-      {
-        threshold: 0,
-        rootMargin: "0px 0px -150px 0px",
-      }
-    );
-
-    observer.observe(heroElement);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [pathname]);
-
   const isOnDarkPage = pathname === "/info";
+  const isOnHome = pathname === "/";
+
+  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (isOnHome) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }
+  };
 
   return (
     <nav
       id="primary-navigation"
-      className={`primary-navigation ${!isVisible ? "primary-navigation--hidden" : ""} ${isOnDarkPage ? "primary-navigation--on-dark" : ""}`}
+      className={`primary-navigation ${isOnDarkPage ? "primary-navigation--on-dark" : ""}`}
       aria-label="Primary navigation"
     >
+      <Link href="/" className="primary-navigation__logo primary-navigation__logo--button" aria-label="Go to Work" onClick={handleLogoClick}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/OUTLINE logo black@2x 3.svg"
+          alt="555 Studio"
+          width={48}
+          height={26}
+          className={isOnDarkPage ? "primary-navigation__logo-img--invert" : ""}
+        />
+      </Link>
       <ul id="menu-header" className="menu">
         <li>
-          <Link href="/">Work</Link>
-        </li>
-        <li>
-          <Link href="/info">Info</Link>
+          <Link href="/info">OUR WHY</Link>
         </li>
       </ul>
     </nav>

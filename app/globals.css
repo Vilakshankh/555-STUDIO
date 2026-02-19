@@ -1,20 +1,59 @@
+/* Tailwind v4 — import theme vars + utilities, skip preflight to preserve existing styles */
+@import "tailwindcss/theme" layer(theme);
+@import "tailwindcss/utilities" layer(utilities);
+
+@import "./styles/tokens.typography.css";
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* Black circle cursor for buttons and button-like elements */
+button,
+[role="button"],
+.primary-navigation__logo--button,
+.primary-navigation .menu a,
+.homeHeroAbout__scrollCue {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="black"/></svg>') 12 12, pointer;
+}
+
+/* White circle cursor on dark backgrounds */
+.primary-navigation--on-dark .primary-navigation__logo--button,
+.primary-navigation--on-dark .menu a,
+.pageBgBlack button,
+.pageBgBlack [role="button"],
+.pageBgBlack a {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="white"/></svg>') 12 12, pointer;
+}
+
 :root {
   --nav-height: 120px;
+  /* 25AH-compatible overrides - preserve existing large body/heading scale */
+  --type-body-size: 3.6rem;
+  --type-body-line: 1.2778;
+  --type-h1-size: 3.6rem;
+  --type-h1-line: 1.2;
 }
 
-html,
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 body {
   min-height: 100%;
-  font-family: system-ui, sans-serif;
+  font-family: var(--font-sans, "Host Grotesk", -apple-system, BlinkMacSystemFont,
+    sans-serif);
 }
 
-/* Primary navigation - fixed, full width, 120px height, transparent, difference blend for visibility on any background */
+/* Primary navigation - fixed, full width, 120px height */
 .primary-navigation {
   position: fixed;
   top: 0;
@@ -22,27 +61,67 @@ body {
   width: 100%;
   height: var(--nav-height);
   z-index: 2000;
-  background: transparent;
-  color: white;
-  mix-blend-mode: difference;
-  font-size: 24px;
+  background: white;
+  color: black;
+  font-size: var(--type-caption-size);
   line-height: 1.28;
+  font-family: var(--font-sans);
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   padding-inline: 2rem;
   transition: opacity 0.2s ease, visibility 0s linear 0.2s;
 }
 
-.primary-navigation--on-dark {
-  color: #fff;
+.primary-navigation__logo {
+  color: inherit;
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-weight: var(--type-display-weight);
+  font-size: var(--type-display-size);
+  line-height: var(--type-display-line);
+  letter-spacing: var(--type-display-tracking);
 }
 
-.primary-navigation--hidden {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: none;
+.primary-navigation__logo:hover {
+  color: red;
+}
+
+.primary-navigation__logo--button {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem;
+  margin: -0.5rem;
+  border: none;
+  background: transparent;
+  transition: transform 0.2s ease;
+}
+
+.primary-navigation__logo--button:hover {
+  background: transparent;
+}
+
+.primary-navigation--on-dark .primary-navigation__logo--button:hover {
+  background: transparent;
+}
+
+.primary-navigation__logo img {
+  display: block;
+  height: auto;
+  transition: transform 0.2s ease;
+}
+
+.primary-navigation__logo--button:hover img {
+  transform: scale(1.25);
+}
+
+.primary-navigation__logo-img--invert {
+  filter: invert(1);
+}
+
+.primary-navigation--on-dark {
+  background: black;
+  color: #fff;
 }
 
 .primary-navigation .menu {
@@ -56,57 +135,177 @@ body {
 .primary-navigation .menu a {
   color: inherit;
   text-decoration: none;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-sans);
   font-weight: 600;
-  font-size: clamp(4rem, 8vw, 6rem);
+  font-size: 15px;
+  line-height: var(--type-body-line);
+  letter-spacing: 2px;
 }
 
 .primary-navigation .menu a:hover {
   color: red;
-  text-decoration:none;
+  font-weight: 700;
+  text-decoration: none;
   opacity: none;
 }
 
-/* Home Hero Section */
-.home-hero {
+/* Home Hero - two-column About section (token-driven, plain white) */
+.homeHeroAbout {
   position: relative;
+  --hero-padding: 3rem;
+  /* Scoped token overrides so hero uses design-token scale (not global 3.6rem overrides) */
+  --type-body-size: clamp(1.4rem, 2vw, 1.8rem);
+  --type-body-line: 1.5;
+  --type-h2-size: clamp(2rem, 4vw, 3rem);
+  --type-h2-line: 1.2;
+  opacity: 0.8;
   min-height: 100svh;
   margin-top: calc(-1 * var(--nav-height));
   padding-top: var(--nav-height);
+  background: white;
+  color: black;
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
-.home-hero__bg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
+.homeHeroAbout .wrapper {
   width: 100%;
-  height: 100%;
 }
 
-.home-hero__content {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-  color: white;
-  font-size: 3rem;
-  font-weight: bold;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+.homeHeroAbout__grid {
+  display: grid;
+  grid-template-columns: 6fr 1fr 5fr;
+  gap: var(--hero-padding);
+  align-items: start;
 }
 
-.home-hero__tagline {
-  position: relative;
-  z-index: 1;
+.homeHeroAbout__left {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+}
+
+.homeHeroAbout__heading {
   margin: 0;
-  padding: 0 1.5rem 2.4rem;
-  max-width: min(70%, 92rem);
-  font-size: clamp(1.6rem, 2.4vw, 2.4rem);
-  line-height: 1.3;
-  text-align: center;
-  color: white;
-  mix-blend-mode: difference;
+  text-transform: uppercase;
+}
+
+.homeHeroAbout__left p {
+  margin: 0;
+}
+
+.homeHeroAbout__left p + .homeHeroAbout__heading {
+  margin-top: 2em;
+}
+
+.homeHeroAbout__gutter {
+  min-width: 0;
+}
+
+.homeHeroAbout__right {
+  line-height: 1.6;
+}
+
+.homeHeroAbout__right small {
+  display: block;
+}
+
+.homeHeroAbout a {
+  color: inherit;
+  text-decoration: underline;
+  transition: opacity 0.2s ease;
+}
+
+.homeHeroAbout a:hover {
+  opacity: 0.7;
+}
+
+.homeHeroAbout a:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+.homeHeroFooter {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: var(--hero-padding);
+}
+
+.homeHeroAbout__scrollCue {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  color: inherit;
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-size: var(--type-caption-size);
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.homeHeroAbout__scrollCue:hover,
+.homeHeroAbout__scrollCue:focus-visible {
+  opacity: 1;
+}
+
+.homeHeroAbout__scrollCue:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+.homeHeroAbout__scrollCue--disabled {
+  opacity: 0.3;
+  pointer-events: none;
+  cursor: default;
+}
+
+/* Gallery preload indicator — lives inside .homeHeroFooter, no fixed positioning */
+.galleryLoadOverlay {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #4ade80;
+  font-family: var(--font-sans);
+  font-size: var(--type-caption-size);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.galleryLoadOverlay__spinner {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+}
+
+.galleryLoadOverlay__text {
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .homeHeroAbout {
+    --hero-padding: 2rem;
+    padding-top: max(var(--nav-height), 2rem);
+  }
+
+  .homeHeroAbout__grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .homeHeroAbout__gutter {
+    display: none;
+  }
+}
+
+#section-2 {
+  scroll-margin-top: var(--nav-height);
 }
 
 /* Home section with corner labels */
@@ -138,9 +337,10 @@ body {
 
 .home-section__corner {
   position: absolute;
-  font-size: 60px;
-  font-weight: 600;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-sans);
+  font-size: var(--type-display-size);
+  font-weight: var(--type-h2-weight);
+  line-height: var(--type-display-line);
   z-index: 10;
   color: black;
 }
@@ -251,8 +451,8 @@ body {
   }
 
   .primary-navigation .menu a {
-    font-size: clamp(2.8rem, 12vw, 6rem);
-    line-height: 1;
+    font-size: 15px;
+    line-height: var(--type-body-line);
   }
 
   .columns {
@@ -284,15 +484,15 @@ body {
   }
 
   .home-hero {
-    min-height: 88svh;
-    align-items: flex-end;
+    min-height: 100svh;
+    align-items: center;
   }
 
   .home-hero__tagline {
     max-width: 92%;
-    padding: 0 1.2rem 1.6rem;
+    padding: 0 1.2rem;
     font-size: clamp(1.4rem, 6.3vw, 2.2rem);
-    line-height: 1.2;
+    line-height: var(--type-body-line);
     text-wrap: balance;
   }
 }
@@ -339,12 +539,12 @@ body {
 
 .corner-mark {
   position: absolute;
-  font-size: clamp(3.6rem, 5vw, 6rem);
-  font-weight: 600;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-sans);
+  font-size: var(--type-display-size);
+  font-weight: var(--type-h2-weight);
+  line-height: var(--type-display-line);
   margin: clamp(1rem, 3vw, 2rem);
   color: white;
-
 }
 
 .corner-mark--top-left {
@@ -414,6 +614,9 @@ body {
   /* Extend black into main's top padding so no white bar shows under nav */
   margin-top: calc(-1 * var(--nav-height));
   padding-top: var(--nav-height);
+  /* Match hero left-column type scale — fixed 18px */
+  --type-body-size: 1.8rem;
+  --type-body-line: 1.5;
 }
 
 .pageBgBlack a {
@@ -475,14 +678,16 @@ body {
   }
 }
 
-/* Typography scale matching 25AH */
+/* Typography scale - tokens with 25AH-compatible responsive overrides */
 html {
   font-size: 62.5%; /* 10px base for rem calculations */
 }
 
 body {
-  font-size: 3.6rem; /* 36px */
-  line-height: 1.2778;
+  font-family: var(--font-sans);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  font-weight: var(--type-body-weight);
 }
 
 .main-content {
@@ -490,29 +695,35 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-size: 3.6rem;
-  font-weight: 400;
-  line-height: 1.2;
+  font-family: var(--font-sans);
+  font-size: var(--type-h1-size);
+  font-weight: var(--type-h1-weight);
+  line-height: var(--type-h1-line);
 }
 
 @media (max-width: 1540px) {
-  body, h1, h2, h3, h4, h5, h6 {
-    font-size: 2.4rem; /* 24px */
+  :root {
+    --type-body-size: 2.4rem;
+    --type-h1-size: 2.4rem;
   }
 }
 
 @media (max-width: 768px) {
-  body, h1, h2, h3, h4, h5, h6 {
-    font-size: 1.6rem; /* 16px */
+  :root {
+    --type-body-size: 1.6rem;
+    --type-h1-size: 1.6rem;
   }
 }
 
 /* Section title styling */
 .sectionTitle {
+  font-family: var(--font-sans);
+  font-size: var(--type-h2-size);
+  font-weight: var(--type-h2-weight);
+  line-height: var(--type-h2-line);
   text-align: center;
   text-transform: uppercase;
   margin-bottom: 2rem;
-  font-weight: 600;
 }
 
 /* Page header styling */
@@ -522,14 +733,120 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .pageTitle {
+  font-family: var(--font-sans);
+  font-size: var(--type-h1-size);
+  font-weight: var(--type-h1-weight);
+  line-height: var(--type-h1-line);
   text-align: center;
   text-transform: uppercase;
-  font-weight: 600;
 }
 
 @media (max-width: 768px) {
   .pageHeader {
     padding-top: 24px;
     padding-bottom: 12px;
+  }
+}
+
+/* Typography specimen - verification against Figma 139-514 */
+.typography-specimen {
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  background: white;
+  color: black;
+  /* Reset token overrides to show pure Figma-derived scale */
+  --type-body-size: clamp(1.4rem, 2vw, 1.8rem);
+  --type-body-line: 1.5;
+}
+
+.typography-specimen__section {
+  display: flex;
+  gap: 3rem;
+  align-items: flex-start;
+  margin-bottom: 4rem;
+  max-width: 90rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.typography-specimen__label {
+  flex-shrink: 0;
+  width: 12rem;
+  color: #666;
+}
+
+.typography-specimen__sample {
+  flex: 1;
+}
+
+.typography-specimen__meta {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid #ddd;
+  color: #888;
+}
+
+/* =========================================
+   Scroll Shadow Indicators (homepage)
+   Uses CSS Scroll-Driven Animations to show
+   shadows only when the page is scrollable.
+   Gracefully hidden in unsupported browsers.
+   ========================================= */
+
+@keyframes reveal-scroll-shadow {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes detect-root-scroll {
+  from, to { --can-scroll: ; }
+}
+
+.scroll-shadow-host {
+  position: fixed;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+  visibility: hidden;
+  z-index: 1999;
+}
+
+.scroll-shadow {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 3rem;
+  pointer-events: none;
+  z-index: 1999;
+  visibility: hidden;
+}
+
+@supports (animation-timeline: scroll()) {
+  .scroll-shadow-host {
+    animation: detect-root-scroll;
+    animation-timeline: scroll(root y);
+    animation-fill-mode: none;
+    visibility: visible;
+  }
+
+  .scroll-shadow {
+    --visibility-if-can-scroll: var(--can-scroll) visible;
+    visibility: var(--visibility-if-can-scroll, hidden);
+    animation: reveal-scroll-shadow;
+    animation-timeline: scroll(root y);
+    animation-fill-mode: both;
+  }
+
+  .scroll-shadow--top {
+    top: var(--nav-height);
+    background: radial-gradient(farthest-side at 50% 0, rgb(0 0 0 / 0.2), transparent);
+    animation-range: 16px 32px;
+  }
+
+  .scroll-shadow--bottom {
+    bottom: 0;
+    background: radial-gradient(farthest-side at 50% 100%, rgb(0 0 0 / 0.2), transparent);
+    animation-direction: reverse;
+    animation-range: calc(100% - 32px) calc(100% - 16px);
   }
 }
