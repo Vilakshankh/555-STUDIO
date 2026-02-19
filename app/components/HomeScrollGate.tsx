@@ -1,44 +1,23 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback } from "react";
 import ReverseScrollColumns from "./ReverseScrollColumns";
-import ScrollLock from "./ScrollLock";
-import GalleryLoadOverlay from "./GalleryLoadOverlay";
-import ScrollToGallery from "./ScrollToGallery";
+import { useGalleryNav } from "./GalleryNavProvider";
 
 interface HomeScrollGateProps {
   heroContent: React.ReactNode;
 }
 
-const EMPHASIS_IDLE_MS = 500;
-
 export default function HomeScrollGate({ heroContent }: HomeScrollGateProps) {
-  const [loaded, setLoaded] = useState(0);
-  const [total, setTotal] = useState(1);
-  const [ready, setReady] = useState(false);
-  const [loadingEmphasis, setLoadingEmphasis] = useState(false);
-  const emphasisTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const percent = Math.round((loaded / total) * 100);
-
-  const handleScrollAttempt = useCallback(() => {
-    setLoadingEmphasis(true);
-    if (emphasisTimerRef.current) clearTimeout(emphasisTimerRef.current);
-    emphasisTimerRef.current = setTimeout(() => {
-      setLoadingEmphasis(false);
-    }, EMPHASIS_IDLE_MS);
-  }, []);
+  const { setProgress, setReady } = useGalleryNav();
 
   const handleProgress = useCallback((l: number, t: number) => {
-    setLoaded(l);
-    setTotal(t);
-  }, []);
+    setProgress(l, t);
+  }, [setProgress]);
 
   const handleReady = useCallback(() => {
-    setReady(true);
-    if (emphasisTimerRef.current) clearTimeout(emphasisTimerRef.current);
-    setLoadingEmphasis(false);
-  }, []);
+    setReady();
+  }, [setReady]);
 
   return (
     <>
@@ -46,7 +25,6 @@ export default function HomeScrollGate({ heroContent }: HomeScrollGateProps) {
         <div className="scroll-shadow scroll-shadow--top" />
         <div className="scroll-shadow scroll-shadow--bottom" />
       </div>
-      <ScrollLock locked={!ready} onAttempt={handleScrollAttempt} />
       <section
         className="homeHeroAbout"
         aria-labelledby="about-heading"
@@ -56,13 +34,6 @@ export default function HomeScrollGate({ heroContent }: HomeScrollGateProps) {
             {heroContent}
           </div>
         </div>
-        <footer className="homeHeroFooter" aria-label="Gallery navigation">
-          {ready ? (
-            <ScrollToGallery />
-          ) : (
-            <GalleryLoadOverlay percent={percent} emphasized={loadingEmphasis} />
-          )}
-        </footer>
       </section>
       <section id="section-2" className="home-section" aria-label="Content section">
         <ReverseScrollColumns onProgress={handleProgress} onReady={handleReady} />

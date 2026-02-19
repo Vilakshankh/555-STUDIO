@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Host_Grotesk } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
+import { GalleryNavProvider } from "./components/GalleryNavProvider";
 
 const hostGrotesk = Host_Grotesk({
   subsets: ["latin"],
@@ -25,11 +26,12 @@ export default function RootLayout({
         <a href="#main-content" className="skip-to-content">
           Skip to main content
         </a>
-        
-        <Navbar />
-        <main id="main-content" className="main-content">
-          {children}
-        </main>
+        <GalleryNavProvider>
+          <Navbar />
+          <main id="main-content" className="main-content">
+            {children}
+          </main>
+        </GalleryNavProvider>
       </body>
     </html>
   );
