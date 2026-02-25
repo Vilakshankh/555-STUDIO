@@ -53,7 +53,6 @@ const heroContent = (
         <br />
         technoel
         <br />
-        <br />
         district concordia
         <br />
         <br />
