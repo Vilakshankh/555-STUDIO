@@ -193,7 +193,13 @@ export default function ReverseScrollColumns({
           return;
         }
         const img = new Image();
-        img.onload = () => img.decode().then(settle).catch(settle);
+        img.onload = () => {
+          if (typeof img.decode === "function") {
+            img.decode().then(settle).catch(settle);
+            return;
+          }
+          settle();
+        };
         img.onerror = settle;
         img.src = src;
       });
