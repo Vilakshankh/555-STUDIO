@@ -174,15 +174,15 @@ body {
   --type-h2-size: clamp(2rem, 4vw, 3rem);
   --type-h2-line: 1.2;
   opacity: 0.8;
-  min-height: 100svh;
+  min-height: auto;
   margin-top: calc(-1 * var(--nav-height));
-  padding-top: var(--nav-height);
+  padding-top: calc(var(--nav-height) + 2rem);
   background: white;
   color: black;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding-bottom: calc(var(--hero-padding) + 3rem);
+  justify-content: flex-start;
+  padding-bottom: var(--hero-padding);
 }
 
 .homeHeroAbout .wrapper {
