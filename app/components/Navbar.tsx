@@ -52,7 +52,7 @@ export default function Navbar() {
       <div className="primary-navigation__right">
         <ul id="menu-header" className="menu">
           <li>
-            <Link href="/info">OUR WHY</Link>
+            <Link href="/info">Our Why</Link>
           </li>
         </ul>
       </div>
