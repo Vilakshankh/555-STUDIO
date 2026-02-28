@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { fetchSignedImageUrls } from "@/lib/supabase/storage";
 
 const PRESENTATION_FOLDER = "presentation night pictures";
+const INITIAL_BATCH_SIZE = 18;
+const BACKGROUND_BATCH_SIZE = 24;
 
 function shuffleWithSeed<T>(array: T[], seed: number): T[] {
   const out = [...array];
@@ -156,56 +158,48 @@ export default function ReverseScrollColumns({
 
   useEffect(() => {
     let cancelled = false;
+    const total = paths.length;
 
-    async function preloadAll() {
-      const total = paths.length;
-      let signedUrls: string[];
-
+    async function loadBatch(from: number, to: number) {
+      const slice = paths.slice(from, to);
+      if (slice.length === 0) return 0;
       try {
-        signedUrls = await fetchSignedImageUrls(paths);
+        const signedUrls = await fetchSignedImageUrls(slice);
+        if (cancelled) return 0;
+        setImages((current) => [...current, ...signedUrls.filter(Boolean)]);
+        return signedUrls.filter(Boolean).length;
       } catch {
-        // If signing fails entirely, report ready so scrolling isn't locked forever
-        if (!cancelled) {
-          onProgress?.(total, total);
-          onReady?.();
-        }
-        return;
+        return 0;
       }
-
-      if (cancelled) return;
-
-      setImages(signedUrls.filter(Boolean));
-
-      // Preload + decode each image, track individual progress
-      let loadedCount = 0;
-      const settle = () => {
-        if (cancelled) return;
-        loadedCount++;
-        onProgress?.(loadedCount, total);
-        if (loadedCount === total) {
-          onReady?.();
-        }
-      };
-
-      signedUrls.forEach((src) => {
-        if (!src) {
-          settle();
-          return;
-        }
-        const img = new Image();
-        img.onload = () => img.decode().then(settle).catch(settle);
-        img.onerror = settle;
-        img.src = src;
-      });
     }
 
-    preloadAll();
+    async function preloadInitialAndStream() {
+      const initialLoaded = await loadBatch(0, INITIAL_BATCH_SIZE);
+      if (cancelled) return;
+
+      onProgress?.(Math.min(initialLoaded, total), total);
+      onReady?.();
+
+      let loadedSoFar = initialLoaded;
+      for (
+        let start = INITIAL_BATCH_SIZE;
+        start < paths.length && !cancelled;
+        start += BACKGROUND_BATCH_SIZE
+      ) {
+        const end = Math.min(start + BACKGROUND_BATCH_SIZE, paths.length);
+        const loaded = await loadBatch(start, end);
+        loadedSoFar += loaded;
+        if (cancelled) return;
+        onProgress?.(Math.min(loadedSoFar, total), total);
+      }
+    }
+
+    preloadInitialAndStream();
 
     return () => {
       cancelled = true;
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [onProgress, onReady, paths]);
 
   const leftColumnImages = images.filter((_, i) => i % 3 === 0);
   const centerColumnImages = images.filter((_, i) => i % 3 === 1);

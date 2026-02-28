@@ -51,7 +51,9 @@ const heroContent = (
         <br />
         HEC
         <br />
-        technoel district concordia
+        technoel
+        <br />
+        district concordia
         <br />
         <br />
         <strong>SERVICES</strong>

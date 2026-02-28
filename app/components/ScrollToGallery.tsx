@@ -10,7 +10,7 @@ export default function ScrollToGallery({ disabled = false }: ScrollToGalleryPro
     if (disabled) return;
     const target = document.getElementById("section-2");
     if (target) {
-      window.scrollTo({ top: target.offsetTop, behavior: "smooth" });
+      window.scrollTo({ top: target.offsetTop, behavior: "auto" });
     }
   };
 
